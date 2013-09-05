@@ -10,7 +10,7 @@ class ImageSorcery
   # Runs ImageMagick's 'mogrify'.
   # See http://www.imagemagick.org/script/mogrify.php
   #
- def manipulate!(args={})
+  def manipulate!(args={})
     tokens  = ["mogrify"]
     tokens << convert_to_arguments(args) if args
     tokens << " '#{@file}#{"[#{args[:layer].to_s}]" if args[:layer]}'"
