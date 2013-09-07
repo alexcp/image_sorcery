@@ -7,18 +7,18 @@ class ImageSorcery
     @file = file
   end
 
-	def prepare_command(command, args={})
+  def prepare_command(command, args={})
     tokens  = [command]
     tokens << convert_to_arguments(args)
     tokens << " '#{@file}#{"[#{args[:layer].to_s}]" if args[:layer]}'"
     tokens
-	end
+  end
 
   # Runs ImageMagick's 'mogrify'.
   # See http://www.imagemagick.org/script/mogrify.php
   #
   def manipulate!(args={})
-		tokens = prepare_command("mogrify", args)
+    tokens = prepare_command("mogrify", args)
     tokens << " -annotate #{args[:annotate].to_s}" if args[:annotate]
     tokens  = convert_to_command(tokens)
     success = run(tokens)[1]
@@ -30,7 +30,7 @@ class ImageSorcery
   # See http://www.imagemagick.org/script/composite.php
   #
   def composite!(output, args={})
-		tokens = prepare_command("composite", args)
+    tokens = prepare_command("composite", args)
     tokens << " -annotate #{args[:annotate].to_s}" if args[:annotate]
     tokens  = convert_to_command(tokens)
     success = run(tokens)[1]
@@ -41,7 +41,7 @@ class ImageSorcery
   # See http://www.imagemagick.org/script/convert.php
   #
   def convert(output, args={})
-		tokens = prepare_command("convert", args)
+    tokens = prepare_command("convert", args)
     tokens << " -annotate #{args[:annotate].to_s}" if args[:annotate]
     tokens << " #{output}"
     tokens  = convert_to_command(tokens)
@@ -53,7 +53,7 @@ class ImageSorcery
   # See http://www.imagemagick.org/script/identify.php
   #
   def identify(args={})
-		tokens = prepare_command("identify", args)
+    tokens = prepare_command("identify", args)
     tokens  = convert_to_command(tokens)
     output  = run(tokens)[0]
     output
@@ -118,9 +118,9 @@ class ImageSorcery
 
   def find_file(path, format, layer)
     possible_paths = [
-        Proc.new { |path, format, layer| "#{path}.#{format}" },
-        Proc.new { |path, format, layer| "#{path}-#{layer}.#{format}" },
-        Proc.new { |path, format, layer| "#{path}.#{format}.#{layer}" }
+      Proc.new { |path, format, layer| "#{path}.#{format}" },
+      Proc.new { |path, format, layer| "#{path}-#{layer}.#{format}" },
+      Proc.new { |path, format, layer| "#{path}.#{format}.#{layer}" }
     ]
 
     possible_paths.find { |possible_path| File.exists?(possible_path.call(path, format, layer)) }
