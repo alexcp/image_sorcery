@@ -7,13 +7,18 @@ class ImageSorcery
     @file = file
   end
 
+	def prepare_command(command, args={})
+    tokens  = [command]
+    tokens << convert_to_arguments(args) if args
+    tokens << " '#{@file}#{"[#{args[:layer].to_s}]" if args[:layer]}'"
+    tokens
+	end
+
   # Runs ImageMagick's 'mogrify'.
   # See http://www.imagemagick.org/script/mogrify.php
   #
   def manipulate!(args={})
-    tokens  = ["mogrify"]
-    tokens << convert_to_arguments(args) if args
-    tokens << " '#{@file}#{"[#{args[:layer].to_s}]" if args[:layer]}'"
+		tokens = prepare_command("mogrify", args)
     tokens << " -annotate #{args[:annotate].to_s}" if args[:annotate]
     tokens  = convert_to_command(tokens)
     success = run(tokens)[1]
@@ -25,9 +30,7 @@ class ImageSorcery
   # See http://www.imagemagick.org/script/composite.php
   #
   def composite!(output, args={})
-    tokens  = ["composite"]
-    tokens << convert_to_arguments(args) if args
-    tokens << " '#{@file}#{"[#{args[:layer].to_s}]" if args[:layer]}'"
+		tokens = prepare_command("composite", args)
     tokens << " -annotate #{args[:annotate].to_s}" if args[:annotate]
     tokens  = convert_to_command(tokens)
     success = run(tokens)[1]
@@ -38,9 +41,7 @@ class ImageSorcery
   # See http://www.imagemagick.org/script/convert.php
   #
   def convert(output, args={})
-    tokens  = ["convert"]
-    tokens << convert_to_arguments(args) if args
-    tokens << " '#{@file}#{"[#{args[:layer].to_s}]" if args[:layer]}'"
+		tokens = prepare_command("convert", args)
     tokens << " -annotate #{args[:annotate].to_s}" if args[:annotate]
     tokens << " #{output}"
     tokens  = convert_to_command(tokens)
@@ -52,9 +53,7 @@ class ImageSorcery
   # See http://www.imagemagick.org/script/identify.php
   #
   def identify(args={})
-    tokens = ["identify"]
-    tokens << convert_to_arguments(args) if args
-    tokens << " '#{@file}#{"[#{args[:layer].to_s}]" if args[:layer]}'"
+		tokens = prepare_command("identify", args)
     tokens  = convert_to_command(tokens)
     output  = run(tokens)[0]
     output
