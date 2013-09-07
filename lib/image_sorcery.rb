@@ -9,7 +9,7 @@ class ImageSorcery
 
 	def prepare_command(command, args={})
     tokens  = [command]
-    tokens << convert_to_arguments(args) if args
+    tokens << convert_to_arguments(args)
     tokens << " '#{@file}#{"[#{args[:layer].to_s}]" if args[:layer]}'"
     tokens
 	end
@@ -84,7 +84,7 @@ class ImageSorcery
   #
   def montage(sources, args={})
     tokens = ["montage"]
-    tokens << convert_to_arguments(args) if args
+    tokens << convert_to_arguments(args)
     sources.each {|source| tokens << " '#{source}'" }
     tokens << " '#{@file}'"
     tokens  = convert_to_command(tokens)
